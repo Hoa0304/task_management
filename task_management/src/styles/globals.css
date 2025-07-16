@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+body {
+  @apply bg-[#F3F4F8] text-gray-900;
+}
+
+@layer utilities {
+  .container {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
