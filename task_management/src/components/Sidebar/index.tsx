@@ -25,7 +25,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-14 bg-[#f9f9fc] min-h-screen flex flex-col items-center py-4 space-y-6 shadow-md">
+    <aside className="w-full sm:w-14 bg-[#f9f9fc] min-h-screen flex sm:flex-col flex-row items-center sm:py-4 py-2 sm:space-y-6 space-x-4 sm:space-x-0 shadow-md">
       {icons.map(({ icon: Icon, href, label }) => {
         const isActive = pathname === href;
 
@@ -43,7 +43,7 @@ export default function Sidebar() {
                   isActive && "text-white"
                 )}
               />
-              <span className="absolute left-12 top-1/2 -translate-y-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all z-10">
+              <span className="absolute sm:left-12 left-1/2 sm:top-1/2 top-full sm:-translate-y-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all z-10">
                 {label}
               </span>
             </div>
