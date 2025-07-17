@@ -3,14 +3,14 @@ from flask_cors import CORS
 from sqlalchemy.orm import scoped_session
 from datetime import datetime
 
-from models import Task
-from database import SessionLocal, init_db, insert_task
+from models import Task, User
+from database import TaskSessionLocal, UserSessionLocal, init_db, insert_task
 
 app = Flask(__name__)
 CORS(app)
 
 init_db()
-db = scoped_session(SessionLocal)
+db = scoped_session(TaskSessionLocal)
 
 
 def task_to_dict(task: Task):
@@ -42,11 +42,10 @@ def get_task(task_id):
 
 @app.route("/api/tasks", methods=["POST"])
 def create_task():
-    db_session = SessionLocal()
+    db_session = TaskSessionLocal()
     try:
         new_task_data = request.get_json()
 
-        # ✅ Convert due_date to string if it's datetime
         if 'due_date' in new_task_data and isinstance(new_task_data['due_date'], str):
             try:
                 date_obj = datetime.strptime(new_task_data['due_date'], "%Y-%m-%d").date()
@@ -98,6 +97,45 @@ def delete_task(task_id):
     db.commit()
     return jsonify({"message": "Task deleted successfully."})
 
+@app.route("/api/login", methods=["POST"])
+def login():
+    db_user = UserSessionLocal()
+    try:
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+
+        user = db_user.query(User).filter(User.email == email).first()
+        if not user or not user.check_password(password):
+            return jsonify({"error": "Invalid credentials"}), 401
+
+        return jsonify(user.to_dict())
+    finally:
+        db_user.close()
+
+
+@app.route("/api/register", methods=["POST"])
+def register():
+    db_user = UserSessionLocal()
+    try:
+        data = request.get_json()
+        email = data.get("email")
+        username = data.get("username")
+        password = data.get("password")
+
+        if db_user.query(User).filter(User.username == username).first():
+            return jsonify({"error": "Username already exists"}), 400
+        if db_user.query(User).filter(User.email == email).first():
+            return jsonify({"error": "Email already exists"}), 400
+
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        db_user.add(new_user)
+        db_user.commit()
+        db_user.refresh(new_user)
+        return jsonify(new_user.to_dict()), 201
+    finally:
+        db_user.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
