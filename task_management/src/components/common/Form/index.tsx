@@ -1,36 +1,45 @@
 "use client";
-
-import { useState } from "react";
+import { useState} from "react";
 import { Task, TaskStatus, TaskPriority, TaskCategory } from "@/lib/types";
 import ImageUploader from "../Image";
 
-export default function TaskForm({
-  status,
-  onCreate,
-  onCancel,
-}: {
-  status: TaskStatus;
-  onCreate: (newTask: Task) => void;
+type Props = {
+  initialData?: Partial<Task>;
+  status?: TaskStatus;
+  onSubmit: (task: Task) => void;
   onCancel: () => void;
-}) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [category, setCategory] = useState<TaskCategory>("Planning");
-  const [cover, setCover] = useState("");
-  const [completed, setCompleted] = useState(0);
-  const [total, setTotal] = useState(8);
-  const [priority, setPriority] = useState<TaskPriority>("Low");
+  submitLabel?: string;
+};
+
+export default function TaskFormBase({
+  initialData = {},
+  status = "To Do",
+  onSubmit,
+  onCancel,
+  submitLabel = "Create",
+}: Props) {
+  const [title, setTitle] = useState(initialData.title || "");
+  const [description, setDescription] = useState(initialData.description || "");
+  const [dueDate, setDueDate] = useState(initialData.dueDate || "");
+  const [category, setCategory] = useState<TaskCategory>(
+    initialData.category || "Planning"
+  );
+  const [cover, setCover] = useState(initialData.cover || "");
+  const [completed, setCompleted] = useState(initialData.completed || 0);
+  const [total, setTotal] = useState(initialData.total || 8);
+  const [priority, setPriority] = useState<TaskPriority>(
+    initialData.priority || "Low"
+  );
 
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    const newTask: Task = {
-      id: Date.now(),
+    const task: Task = {
+      id: initialData.id || Date.now(),
       title,
       description,
       dueDate,
-      status,
+      status: initialData.status || status,
       category,
       cover,
       completed,
@@ -38,17 +47,17 @@ export default function TaskForm({
       priority,
     };
 
-    onCreate(newTask);
+    onSubmit(task);
   };
 
   return (
-    <section className="bg-white p-5 w-full font-sans space-y-4">
+    <section className="bg-white p-4 w-full font-sans space-y-2 scroll-hidden max-h-[80vh] overflow-y-auto">
       <div>
         <label className="text-sm font-medium text-[#232360] block mb-1">
           Title
         </label>
         <input
-          className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+          className="w-full border text-sm rounded-md p-2"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter task title"
@@ -61,7 +70,7 @@ export default function TaskForm({
           Description
         </label>
         <textarea
-          className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+          className="w-full border text-sm rounded-md p-2 resize-none"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Write a short description"
@@ -77,7 +86,7 @@ export default function TaskForm({
           </label>
           <input
             type="date"
-            className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+            className="w-full border text-sm rounded-md p-2"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
           />
@@ -88,7 +97,7 @@ export default function TaskForm({
             Category
           </label>
           <select
-            className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+            className="w-full border text-sm rounded-md p-2"
             value={category}
             onChange={(e) => setCategory(e.target.value as TaskCategory)}
           >
@@ -105,7 +114,7 @@ export default function TaskForm({
           Priority
         </label>
         <select
-          className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+          className="w-full border text-sm rounded-md p-2"
           value={priority}
           onChange={(e) => setPriority(e.target.value as TaskPriority)}
         >
@@ -115,7 +124,7 @@ export default function TaskForm({
         </select>
       </div>
 
-      <ImageUploader onImageUpload={(base64) => setCover(base64)} />
+      <ImageUploader onImageUpload={setCover} />
 
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -124,7 +133,7 @@ export default function TaskForm({
           </label>
           <input
             type="number"
-            className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+            className="w-full border text-sm rounded-md p-2"
             min={0}
             value={completed}
             onChange={(e) => setCompleted(Number(e.target.value))}
@@ -137,7 +146,7 @@ export default function TaskForm({
           </label>
           <input
             type="number"
-            className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+            className="w-full border text-sm rounded-md p-2"
             min={1}
             value={total}
             onChange={(e) => setTotal(Number(e.target.value))}
@@ -156,7 +165,7 @@ export default function TaskForm({
           onClick={handleSubmit}
           className="bg-[#5051F9] text-white px-5 py-1.5 rounded-md hover:bg-indigo-700 text-sm"
         >
-          Create
+          {submitLabel}
         </button>
       </div>
     </section>

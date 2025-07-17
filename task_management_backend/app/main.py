@@ -23,6 +23,107 @@ sample_tasks = [
         "total": 8,
         "priority": "High"
     },
+    {
+        "id": 355,
+        "title": "auditing information architecture",
+        "description": "Create content for peceland App",
+        "status": "To Do",
+        "due_date": "2021-08-20",
+        "category": "Research",
+        "members": [
+            {"name": "Alice", "avatar": "/icons/logo.svg"},
+            {"name": "Bob", "avatar": "/icons/logo.svg"},
+            {"name": "Eve", "avatar": "/icons/logo.svg"}
+        ],
+        "completed": 0,
+        "total": 8,
+        "priority": "Medium"
+    },
+    {
+        "id": 2,
+        "title": "Update support documentation",
+        "description": "Create content for peceland App",
+        "status": "To Do",
+        "due_date": "2021-08-20",
+        "category": "Content",
+        "cover": "/images/doc.png",
+        "members": [
+            {"name": "Alice", "avatar": "/icons/logo.svg"},
+            {"name": "Bob", "avatar": "/icons/logo.svg"},
+            {"name": "Eve", "avatar": "/icons/logo.svg"}
+        ],
+        "completed": 0,
+        "total": 8,
+        "priority": "Low"
+    },
+    {
+        "id": 3,
+        "title": "Create styleguide foundation",
+        "description": "Create content for peceland App",
+        "status": "Backlog",
+        "due_date": "2021-08-20",
+        "category": "Planning",
+        "cover": "/images/stylebg.png",
+        "members": [
+            {"name": "Alice", "avatar": "/icons/logo.svg"},
+            {"name": "Bob", "avatar": "/icons/logo.svg"},
+            {"name": "Eve", "avatar": "/icons/logo.svg"}
+        ],
+        "completed": 0,
+        "total": 8,
+        "priority": "Medium"
+    },
+    {
+        "id": 4,
+        "title": "Design System",
+        "description": "Create content for peceland App",
+        "status": "Review",
+        "due_date": "2025-08-20",
+        "category": "Content",
+        "cover": "/images/designbg.png",
+        "members": [
+            {"name": "Alice", "avatar": "/icons/logo.svg"},
+            {"name": "Bob", "avatar": "/icons/logo.svg"},
+            {"name": "Eve", "avatar": "/icons/logo.svg"}
+        ],
+        "completed": 0,
+        "total": 8,
+        "priority": "Low"
+    },
+    {
+        "id": 5,
+        "title": "Create styleguide foundation",
+        "description": "Create content for peceland App",
+        "status": "In Progress",
+        "due_date": "2025-08-20",
+        "category": "Content",
+        "cover": "/images/stylebg.png",
+        "members": [
+            {"name": "Alice", "avatar": "/icons/logo.svg"},
+            {"name": "Bob", "avatar": "/icons/logo.svg"},
+            {"name": "Eve", "avatar": "/icons/logo.svg"}
+        ],
+        "completed": 0,
+        "total": 8,
+        "priority": "High"
+    },
+    {
+        "id": 6,
+        "title": "Create styleguide foundation",
+        "description": "Create content for peceland App",
+        "status": "Done",
+        "due_date": "2021-08-20",
+        "category": "Planning",
+        "cover": "/images/stylebg.png",
+        "members": [
+            {"name": "Alice", "avatar": "/icons/logo.svg"},
+            {"name": "Bob", "avatar": "/icons/logo.svg"},
+            {"name": "Eve", "avatar": "/icons/logo.svg"}
+        ],
+        "completed": 0,
+        "total": 8,
+        "priority": "Medium"
+    },
 ]
 
 
