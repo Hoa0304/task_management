@@ -32,7 +32,7 @@ export default function Status({
       <div className="flex items-center gap-2">
         <div className="relative" ref={menuRef}>
           <button onClick={() => setMenuOpen((prev) => !prev)}>
-            <MoreHorizontal className="w-5 h-5 text-[#768396]" />
+            <MoreHorizontal className="w-5 h-5 mt-2 text-[#768396]" />
           </button>
           {menuOpen && (
             <div className="absolute right-0 w-40 bg-white shadow-lg rounded-md py-2 z-50 border-2 border-[#5051F9]">
@@ -53,7 +53,7 @@ export default function Status({
                   }}
                   className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                 >
-                  ✏️ Edit
+                  ✏️ Editor
                 </div>
               )}
             </div>

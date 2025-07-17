@@ -6,25 +6,54 @@ import { X } from "lucide-react";
 import TaskCard from "../Task/TaskCard";
 import Status from "./Status";
 import CreateTaskForm from "../Task/CreateTaskForm";
-
 import EditTaskForm from "../Task/EditTaskForm";
+import TaskPreviewItem from "../Task/TaskPreviewItem";
+import { createTask, deleteTask, updateTask } from "@/lib/api";
 
 export default function BoardColumn({ title, tasks }: { title: TaskStatus; tasks: Task[] }) {
   const [isAdding, setIsAdding] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // <--- thêm
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [localTasks, setLocalTasks] = useState<Task[]>(tasks);
 
-  const handleCreate = (task: Task) => {
-    const newTask = { ...task, id: Date.now() };
-    setLocalTasks([newTask, ...localTasks]);
-    setIsAdding(false);
+  const handleCreate = async (task: Task) => {
+    try {
+      const created = await createTask(task);
+      setLocalTasks([created, ...localTasks]);
+      setIsAdding(false);
+    } catch (error) {
+      console.error("Failed to create task:", error);
+    }
   };
 
-  const handleUpdate = (updatedTask: Task) => {
-    setLocalTasks((prev) =>
-      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-    setIsEditing(false);
+  const handleDelete = async (taskId: number) => {
+    try {
+      await deleteTask(taskId);
+      setLocalTasks((prev) => prev.filter((t) => t.id !== taskId));
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
+  };
+  const handleUpdate = async (updatedTask: Task) => {
+    const taskToUpdate = {
+      ...updatedTask,
+      due_date: updatedTask.dueDate
+        ? new Date(updatedTask.dueDate).toISOString().split("T")[0]
+        : undefined,
+    };
+
+    try {
+      const result = await updateTask(updatedTask.id, taskToUpdate);
+
+      setLocalTasks((prev) =>
+        prev.map((t) => (t.id === result.id ? result : t))
+      );
+
+      setEditingTask(null);
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
   };
 
   return (
@@ -32,7 +61,7 @@ export default function BoardColumn({ title, tasks }: { title: TaskStatus; tasks
       <Status
         title={title}
         onAdd={() => setIsAdding(true)}
-        onEdit={() => setIsEditing(true)} // <-- thêm
+        onEdit={() => setIsEditing(true)}
       />
 
       {/* Task list */}
@@ -58,22 +87,48 @@ export default function BoardColumn({ title, tasks }: { title: TaskStatus; tasks
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* Editor Modal */}
       {isEditing && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
           <div className="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto scroll-hidden bg-white rounded-2xl p-6">
-            <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setEditingTask(null);
+              }}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            >
               <X size={24} />
             </button>
-            <EditTaskForm
-              task={localTasks[0]} // hoặc chọn task cụ thể
-              onUpdate={handleUpdate}
-              onCancel={() => setIsEditing(false)}
-            />
+
+            {editingTask ? (
+              <EditTaskForm
+                task={editingTask}
+                onUpdate={(updatedTask) => {
+                  handleUpdate(updatedTask);
+                  setEditingTask(null);
+                  setIsEditing(false);
+                }}
+                onCancel={() => setEditingTask(null)}
+              />
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold mb-4">Editor Tasks in {title}</h2>
+                <ul className="space-y-4">
+                  {localTasks.map((task) => (
+                    <TaskPreviewItem
+                      key={task.id}
+                      task={task}
+                      onEdit={(t) => setEditingTask(t)}
+                      onDelete={handleDelete}
+                    />
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         </div>
       )}
     </section>
   );
 }
-
