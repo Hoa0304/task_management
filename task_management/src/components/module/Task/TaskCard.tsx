@@ -10,8 +10,8 @@ const labelColorMap: Record<string, string> = {
 };
 const priorityColorMap: Record<string, string> = {
   high: "red",
-  medium: "yellow",
-  low: "green",
+  medium: "#FFD700",
+  low: "#34D870",
 };
 
 export default function TaskCard({ task }: { task: Task }) {
