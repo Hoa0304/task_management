@@ -2,27 +2,6 @@
 
 This is the **backend** for the Task Management WebApp, built with **Python Flask**. It provides a RESTful API to manage tasks including creating, retrieving, updating, and deleting tasks.
 
-## 📁 Project Structure
-
-task_management_backend/
-│
-├── app/
-│ ├── init.py # Flask app factory
-│ ├── models/
-│ │ └── task.py # SQLAlchemy Task model
-│ ├── routes/
-│ │ └── tasks.py # API routes for task CRUD
-│ └── config/
-│ └── config.py # Configuration (e.g., DB URI)
-│
-├── app.py # App entry point
-├── requirements.txt # Python dependencies
-└── .env # Environment variables
-
-yaml
-Sao chép
-Chỉnh sửa
-
 ---
 
 ## 🚀 Features
