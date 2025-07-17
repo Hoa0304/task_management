@@ -1,9 +1,13 @@
-export type TaskStatus = "Backlog" | "To Do" | "In Progress" | "Review";
+export type TaskStatus = "Backlog" | "To Do" | "In Progress" | "Review" | "Done";
 
 export interface Member {
   name: string;
   avatar: string;
 }
+
+export type TaskPriority = "Low" | "Medium" | "High";
+
+export type TaskCategory = "Design" | "Content" | "Research" | "Planning";
 
 export interface Task {
   id: number;
@@ -11,9 +15,11 @@ export interface Task {
   description: string;
   status: TaskStatus;
   dueDate?: string;
-  label?: string;
+  category?: TaskCategory;
   cover?: string;
-  members?: Member[]; 
+  members?: Member[];
   completed?: number;
   total?: number;
+  priority?: TaskPriority;
 }
+

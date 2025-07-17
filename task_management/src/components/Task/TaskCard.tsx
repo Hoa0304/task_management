@@ -8,21 +8,38 @@ const labelColorMap: Record<string, string> = {
   planning: "#E97342",
   content: "#F59E0B",
 };
+const priorityColorMap: Record<string, string> = {
+  high: "red",
+  medium: "yellow",
+  low: "green",
+};
 
 export default function TaskCard({ task }: { task: Task }) {
-  const labelBg = labelColorMap[task.label?.toLowerCase() || ""] || "#6B7280"; // default: gray-500
+  const labelBg = labelColorMap[task.category?.toLowerCase() || ""] || "#6B7280";
+  const priorityColor = priorityColorMap[task.priority?.toLowerCase() || ""] || "#6B7280";
 
   return (
     <article className="bg-white rounded-2xl shadow p-4 w-full font-sans mb-5">
-      {/* Label */}
-      {task.label && (
-        <span
-          className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-block mb-3 flex items-center justify-center leading-[normal] pt-[2px]"
-          style={{ backgroundColor: labelBg }}
-        >
-          {task.label}
-        </span>
-      )}
+      {/* Category + Priority */}
+      <div className="flex items-center justify-between mb-3">
+        {task.category && (
+          <span
+            className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-block flex items-center justify-center leading-[normal] pt-[2px]"
+            style={{ backgroundColor: labelBg }}
+          >
+            {task.category}
+          </span>
+        )}
+        {task.priority && (
+          <span
+            className="w-3 h-3 rounded-full inline-block"
+            style={{ backgroundColor: priorityColor }}
+            title={task.priority}
+          />
+
+        )}
+      </div>
+
 
       {/* Cover image */}
       {task.cover && (
@@ -32,7 +49,6 @@ export default function TaskCard({ task }: { task: Task }) {
           width={400}
           height={200}
           className="w-full h-32 object-cover rounded-xl mb-3"
-          // priority
         />
       )}
 
@@ -55,7 +71,6 @@ export default function TaskCard({ task }: { task: Task }) {
 
       {/* avatars + progress */}
       <div className="flex items-center justify-between pt-1">
-        {/* Avatars */}
         <div className="flex -space-x-2">
           {task.members?.slice(0, 3).map((member, index) => (
             <Image
@@ -69,7 +84,6 @@ export default function TaskCard({ task }: { task: Task }) {
           ))}
         </div>
 
-        {/* Progress */}
         <div className="flex items-center gap-1 text-xs text-gray-500">
           <CheckCircle size={16} className="text-gray-400" />
           {task.completed}/{task.total}

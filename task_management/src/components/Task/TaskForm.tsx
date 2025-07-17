@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Task, TaskStatus } from "@/lib/types";
+import { Task, TaskStatus, TaskPriority, TaskCategory } from "@/lib/types";
 import ImageUploader from "../Image";
 
 export default function TaskForm({
@@ -16,10 +16,11 @@ export default function TaskForm({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [label, setLabel] = useState("Planning");
+  const [category, setCategory] = useState<TaskCategory>("Planning");
   const [cover, setCover] = useState("");
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(8);
+  const [priority, setPriority] = useState<TaskPriority>("Low");
 
   const handleSubmit = () => {
     if (!title.trim()) return;
@@ -30,10 +31,11 @@ export default function TaskForm({
       description,
       dueDate,
       status,
-      label,
+      category,
       cover,
       completed,
       total,
+      priority,
     };
 
     onCreate(newTask);
@@ -83,12 +85,12 @@ export default function TaskForm({
 
         <div>
           <label className="text-sm font-medium text-[#232360] block mb-1">
-            Label
+            Category
           </label>
           <select
             className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
+            value={category}
+            onChange={(e) => setCategory(e.target.value as TaskCategory)}
           >
             <option value="Design">Design</option>
             <option value="Research">Research</option>
@@ -98,8 +100,23 @@ export default function TaskForm({
         </div>
       </div>
 
+      <div>
+        <label className="text-sm font-medium text-[#232360] block mb-1">
+          Priority
+        </label>
+        <select
+          className="w-full border border-[#C4C4C4] text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5051F9]"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as TaskPriority)}
+        >
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
 
-<ImageUploader onImageUpload={(base64) => setCover(base64)} />
+      <ImageUploader onImageUpload={(base64) => setCover(base64)} />
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium text-[#232360] block mb-1">

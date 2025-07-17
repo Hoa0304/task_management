@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import DashboardWrapper from "./dashboardWrapper";
-import { dmSans } from "./font";
+import { dmSans } from "@/lib/font";
 
 
 export const metadata: Metadata = {
