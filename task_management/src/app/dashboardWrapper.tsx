@@ -10,8 +10,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <Sidebar />
       <main className="flex-1 bg-gray-50 font-sans ">
         <Header />
-        
-
         {children}
       </main>
     </div>

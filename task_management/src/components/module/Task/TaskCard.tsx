@@ -1,45 +1,35 @@
 import { Task } from "@/lib/types";
 import Image from "next/image";
 import { CheckCircle } from "lucide-react";
-
-const labelColorMap: Record<string, string> = {
-  design: "#5051F9",
-  research: "#1EA7FF",
-  planning: "#E97342",
-  content: "#F59E0B",
-};
-const priorityColorMap: Record<string, string> = {
-  high: "red",
-  medium: "#FFD700",
-  low: "#34D870",
-};
+import { LABEL_COLOR_MAP, PRIORITY_COLOR_MAP } from "@/lib/constants";
 
 export default function TaskCard({ task }: { task: Task }) {
-  const labelBg = labelColorMap[task.category?.toLowerCase() || ""] || "#6B7280";
-  const priorityColor = priorityColorMap[task.priority?.toLowerCase() || ""] || "#6B7280";
+  const labelColor = task.category
+    ? LABEL_COLOR_MAP[task.category.toLowerCase()] || "#999"
+    : "#999";
+
+  const priorityColor = task.priority
+    ? PRIORITY_COLOR_MAP[task.priority.toLowerCase()] || "#999"
+    : "#999";
 
   return (
     <article className="bg-white rounded-2xl shadow p-4 w-full font-sans mb-5">
       {/* Category + Priority */}
       <div className="flex items-center justify-between mb-3">
-        {task.category && (
-          <span
-            className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-block flex items-center justify-center leading-[normal] pt-[2px]"
-            style={{ backgroundColor: labelBg }}
-          >
-            {task.category}
-          </span>
-        )}
+        <span
+          className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-flex items-center justify-center leading-[20px]"
+          style={{ backgroundColor: labelColor }}
+        >
+          {task.category}
+        </span>
         {task.priority && (
           <span
             className="w-3 h-3 rounded-full inline-block"
             style={{ backgroundColor: priorityColor }}
             title={task.priority}
           />
-
         )}
       </div>
-
 
       {/* Cover image */}
       {task.cover && (
