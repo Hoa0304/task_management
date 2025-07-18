@@ -1,16 +1,24 @@
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Task
+from models import Base, Task, User
+import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, 'tasks.db')}"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(bind=engine)
+# TASK DATABASE
+TASK_DB_URL = f"sqlite:///{os.path.join(BASE_DIR, 'tasks.db')}"
+task_engine = create_engine(TASK_DB_URL, connect_args={"check_same_thread": False})
+TaskSessionLocal = sessionmaker(bind=task_engine)
+
+# USER DATABASE
+USER_DB_URL = f"sqlite:///{os.path.join(BASE_DIR, 'users.db')}"
+user_engine = create_engine(USER_DB_URL, connect_args={"check_same_thread": False})
+UserSessionLocal = sessionmaker(bind=user_engine)
 
 def init_db():
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=task_engine)
+    Base.metadata.create_all(bind=user_engine)
+
 
 def insert_task(db, task_data):
     mapped_data = {
