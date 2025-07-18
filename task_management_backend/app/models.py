@@ -38,9 +38,11 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(128), nullable=False)
+    role = Column(String(50))
+    avatar = Column(String(255))
 
     def set_password(self, password: str):
         self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
@@ -51,6 +53,8 @@ class User(Base):
     def to_dict(self):
         return {
             "id": self.id,
-            "username": self.username,
+            "name": self.name,
             "email": self.email,
+            "role": self.role,
+            "avatar": self.avatar,
         }

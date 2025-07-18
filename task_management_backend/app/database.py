@@ -19,7 +19,6 @@ def init_db():
     Base.metadata.create_all(bind=task_engine)
     Base.metadata.create_all(bind=user_engine)
 
-
 def insert_task(db, task_data):
     mapped_data = {
         "title": task_data.get("title"),
@@ -39,3 +38,33 @@ def insert_task(db, task_data):
     db.commit()
     db.refresh(task)
     return task
+
+def insert_user(db, user_data):
+    user = User(
+        name=user_data["name"],
+        email=user_data["email"],
+        role=user_data.get("role"),
+        avatar=user_data.get("avatar"),
+    )
+    user.set_password(user_data["password"])
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def update_user(db, user_id, user_data):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return None
+
+    user.name = user_data.get("name", user.name)
+    user.email = user_data.get("email", user.email)
+    user.role = user_data.get("role", user.role)
+    user.avatar = user_data.get("avatar", user.avatar)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+def get_user(db, user_id):
+    return db.query(User).filter(User.id == user_id).first()
