@@ -120,15 +120,15 @@ def register():
     try:
         data = request.get_json()
         email = data.get("email")
-        username = data.get("username")
+        name = data.get("name")
         password = data.get("password")
 
-        if db_user.query(User).filter(User.username == username).first():
-            return jsonify({"error": "Username already exists"}), 400
+        if db_user.query(User).filter(User.name == name).first():
+            return jsonify({"error": "name already exists"}), 400
         if db_user.query(User).filter(User.email == email).first():
             return jsonify({"error": "Email already exists"}), 400
 
-        new_user = User(username=username, email=email)
+        new_user = User(name=name, email=email)
         new_user.set_password(password)
         db_user.add(new_user)
         db_user.commit()
@@ -136,6 +136,47 @@ def register():
         return jsonify(new_user.to_dict()), 201
     finally:
         db_user.close()
+
+@app.route("/api/users/<int:user_id>", methods=["GET"])
+def get_user(user_id):
+    db_user = UserSessionLocal()
+    try:
+        user = db_user.query(User).filter(User.id == user_id).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        return jsonify(user.to_dict())
+    finally:
+        db_user.close()
+
+
+@app.route("/api/users/<int:user_id>", methods=["PUT"])
+def update_user(user_id):
+    db_user = UserSessionLocal()
+    try:
+        data = request.get_json()
+        user = db_user.query(User).filter(User.id == user_id).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        user.name = data.get("name", user.name)
+        user.email = data.get("email", user.email)
+        user.role = data.get("role", user.role)
+        user.avatar = data.get("avatar", user.avatar)
+
+        db_user.commit()
+        db_user.refresh(user)
+        return jsonify(user.to_dict())
+    finally:
+        db_user.close()
+
+@app.route("/api/users", methods=["GET"])
+def get_all_users():
+    db = UserSessionLocal()
+    try:
+        users = db.query(User).all()
+        return jsonify([user.to_dict() for user in users])
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
