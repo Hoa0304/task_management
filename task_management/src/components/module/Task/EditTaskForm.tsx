@@ -1,5 +1,6 @@
+import ReusableForm from "@/components/common/Form";
+import { taskFields } from "@/lib/constants";
 import { Task } from "@/lib/types";
-import TaskFormBase from "../../common/Form";
 
 export default function EditTaskForm({
   task,
@@ -10,10 +11,19 @@ export default function EditTaskForm({
   onUpdate: (updatedTask: Task) => void;
   onCancel: () => void;
 }) {
+  const handleSubmit = (data: Record<string, any>) => {
+    const updatedTask: Task = {
+      ...task,
+      ...data,
+    };
+    onUpdate(updatedTask);
+  };
+
   return (
-    <TaskFormBase
-      initialData={task}
-      onSubmit={onUpdate}
+    <ReusableForm
+      fields={taskFields}
+      initialValues={task}
+      onSubmit={handleSubmit}
       onCancel={onCancel}
       submitLabel="Update"
     />
