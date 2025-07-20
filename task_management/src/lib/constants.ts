@@ -1,4 +1,4 @@
-import { FieldConfig } from "./types";
+import { FieldConfig, TaskStatus } from "./types";
 
 export const LABEL_COLOR_MAP: Record<string, string> = {
   design: "#5051F9",
@@ -71,4 +71,12 @@ export const taskFields: FieldConfig[] = [
     label: "Assignees",
     type: "members",
   },
+];
+
+export const taskStatusOrder: TaskStatus[] = [
+  "Backlog",
+  "To Do",
+  "In Progress",
+  "Review",
+  "Done",
 ];

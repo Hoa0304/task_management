@@ -178,5 +178,56 @@ def get_all_users():
     finally:
         db.close()
 
+@app.route("/api/tasks/status/add", methods=["PUT"])
+def move_task_to_another_status():
+    data = request.get_json()
+    task_id = data.get("task_id")
+    new_status = data.get("status")
+
+    if not task_id or not new_status:
+        return jsonify({"error": "Missing task_id or status"}), 400
+
+    valid_statuses = ["Backlog", "To Do", "In Progress", "Review", "Done"]
+    if new_status not in valid_statuses:
+        return jsonify({"error": "Invalid status"}), 400
+
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+
+    task.status = new_status
+    db.commit()
+    db.refresh(task)
+
+    return jsonify(task.to_dict()), 200
+
+@app.route("/api/tasks/status/rollback", methods=["PUT"])
+def move_task_to_previous_status():
+    data = request.get_json()
+    task_id = data.get("task_id")
+
+    if not task_id:
+        return jsonify({"error": "Missing task_id"}), 400
+
+    status_order = ["Backlog", "To Do", "In Progress", "Review", "Done"]
+
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+
+    try:
+        current_index = status_order.index(task.status)
+        if current_index == 0:
+            return jsonify({"error": "Task is already in the first status"}), 400
+
+        new_status = status_order[current_index - 1]
+        task.status = new_status
+        db.commit()
+        db.refresh(task)
+
+        return jsonify(task.to_dict()), 200
+    except ValueError:
+        return jsonify({"error": "Invalid task status"}), 400
+
 if __name__ == "__main__":
     app.run(debug=True)
