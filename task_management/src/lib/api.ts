@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Task, User } from "@/lib/types";
+import { Task, TaskStatus, User } from "@/lib/types";
 
 const BASE_URL = "http://localhost:5000/api";
 
@@ -14,12 +14,8 @@ export async function fetchTaskById(taskId: number): Promise<Task> {
 }
 
 export async function createTask(task: Partial<Task>): Promise<Task> {
-  try {
     const res = await axios.post(`${BASE_URL}/tasks`, task);
     return res.data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.error || "Failed to create task");
-  }
 }
 
 export async function updateTask(taskId: number, task: Partial<Task>): Promise<Task> {
@@ -51,5 +47,15 @@ export async function fetchUsers(): Promise<User[]> {
 
 export async function updateUser(userId: number, data: Partial<User>): Promise<User> {
   const res = await axios.put(`${BASE_URL}/users/${userId}`, data);
+  return res.data;
+}
+
+export async function addTaskToStatus(taskId: number, status: string): Promise<Task | null> {
+  const res = await axios.put(`${BASE_URL}/tasks/status/add`, { task_id: taskId, status });
+  return res.data;
+}
+
+export async function moveTaskBack(taskId: number, status: TaskStatus): Promise<Task | null> {
+  const res = await axios.put(`${BASE_URL}/tasks/status/rollback`, { task_id: taskId, status });
   return res.data;
 }
