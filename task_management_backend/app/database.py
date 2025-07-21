@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Task, User
+from app.models import Base, Task, User
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
