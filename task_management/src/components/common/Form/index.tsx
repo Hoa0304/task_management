@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FormProps, User } from "@/lib/types";
+import { FormProps, Member, User } from "@/lib/types";
 import ImageUploader from "../Image";
 
 interface ExtendedFormProps extends FormProps {
   users?: User[];
 }
+
+type FormState = Record<string, any>;
 
 export default function ReusableForm({
   fields,
@@ -17,36 +19,40 @@ export default function ReusableForm({
   showButtons = true,
   users = [],
 }: ExtendedFormProps) {
-  const [form, setForm] = useState(initialValues);
+  const [form, setForm] = useState<FormState>(initialValues);
 
   useEffect(() => {
     setForm(initialValues);
   }, [initialValues]);
 
   const handleChange = (
-  e: React.ChangeEvent<
-    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  >
-) => {
-  const { name, value, multiple, selectedOptions } = e.target as HTMLSelectElement;
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, multiple, selectedOptions } =
+      e.target as HTMLSelectElement;
 
-  if (multiple) {
-    const values = Array.from(selectedOptions, (option) => option.value);
+    if (multiple) {
+      const values = Array.from(selectedOptions, (option) => option.value);
 
-    if (name === "members") {
-      const selectedMembers = users
-        .filter((user) => values.includes(user.id.toString()))
-        .map((user) => ({ name: user.name || "", avatar: user.avatar || "" }));
+      if (multiple && name === "members") {
+        const selectedIds = Array.from(selectedOptions, (option) => option.value);
 
-      setForm((prev) => ({ ...prev, [name]: selectedMembers }));
+        const selectedMembers = users
+          .filter((user) => selectedIds.includes(user.id.toString()))
+          .map((user) => ({
+            name: user.name,
+            avatar: user.avatar,
+          }));
+
+        setForm((prev) => ({ ...prev, [name]: selectedMembers }));
+      }
+
     } else {
-      setForm((prev) => ({ ...prev, [name]: values }));
+      setForm((prev) => ({ ...prev, [name]: value }));
     }
-  } else {
-    setForm((prev) => ({ ...prev, [name]: value }));
-  }
-};
-
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,26 +69,26 @@ export default function ReusableForm({
 
           {field.type === "members" ? (
             <select
-  multiple
-  name={String(field.name)}
-  value={
-    (form[String(field.name)] || []).map((member: any) =>
-      users.find((u) => u.name === member.name)?.id.toString()
-    )
-  }
-  onChange={handleChange}
-  className="w-full px-3 py-2 border border-[#E5E5ED] rounded-md"
->
-  {users.map((user) => (
-    <option key={user.id} value={user.id}>
-      {user.name}
-    </option>
-  ))}
-</select>
+              multiple
+              name={String(field.name)}
+              value={
+                (form[String(field.name)] || []).map((member: any) =>
+                  users.find((u) => u.name === member.name)?.id.toString()
+                )
+              }
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-[#E5E5ED] rounded-md"
+            >
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
 
           ) : field.type === "avatar" ? (
             <ImageUploader
-              initialValue={form[String(field.name)]}
+              initialValue={form[String(field.name)] as string | undefined}
               onImageUpload={(base64) =>
                 setForm((prev) => ({ ...prev, [field.name]: base64 }))
               }
@@ -90,7 +96,7 @@ export default function ReusableForm({
           ) : field.type === "textarea" ? (
             <textarea
               name={String(field.name)}
-              value={form[String(field.name)] || ""}
+              value={(form[String(field.name)] as string) || ""}
               onChange={handleChange}
               placeholder={field.placeholder}
               className="w-full px-3 py-2 border border-[#E5E5ED] rounded-md"
@@ -99,7 +105,7 @@ export default function ReusableForm({
           ) : field.type === "select" ? (
             <select
               name={String(field.name)}
-              value={form[String(field.name)] || ""}
+              value={(form[String(field.name)] as string) || ""}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-[#E5E5ED] rounded-md"
             >
@@ -119,12 +125,11 @@ export default function ReusableForm({
               <input
                 type={field.type}
                 name={String(field.name)}
-                value={form[String(field.name)] || ""}
+                value={(form[String(field.name)] as string) || ""}
                 onChange={handleChange}
                 placeholder={field.placeholder}
-                className={`w-full ${
-                  field.icon ? "pl-9" : ""
-                } px-3 py-2 border border-[#E5E5ED] rounded-md`}
+                className={`w-full ${field.icon ? "pl-9" : ""
+                  } px-3 py-2 border border-[#E5E5ED] rounded-md`}
               />
             </div>
           )}
