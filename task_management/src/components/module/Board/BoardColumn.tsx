@@ -15,6 +15,7 @@ import {
   moveTaskBack,
 } from "@/lib/api";
 import { LABEL_COLOR_MAP, PRIORITY_COLOR_MAP, taskStatusOrder } from "@/lib/constants";
+import EditTaskForm from "../Task/EditTaskForm";
 
 export default function BoardColumn({
   title,
@@ -33,7 +34,7 @@ export default function BoardColumn({
   const [users, setUsers] = useState<User[]>([]);
   const [isRemovingTask, setIsRemovingTask] = useState(false);
   const [isReturningTask, setIsReturningTask] = useState(false);
-
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const handleCreate = async (task: Omit<Task, "id">) => {
     try {
@@ -66,6 +67,14 @@ export default function BoardColumn({
     }
   };
 
+  const handleUpdate = (updated: Task) => {
+    setLocalTasks((prev) =>
+      prev.map((task) => (task.id === updated.id ? updated : task))
+    );
+    setEditingTask(null);
+  };
+
+
   useEffect(() => {
     const loadUsers = async () => {
       try {
@@ -76,7 +85,8 @@ export default function BoardColumn({
       }
     };
     loadUsers();
-  }, []);
+    setLocalTasks(tasks);
+  }, [tasks]);
 
   const getPreviousColumnTasks = (): Task[] => {
     const currentIndex = taskStatusOrder.indexOf(title);
@@ -103,7 +113,7 @@ export default function BoardColumn({
 
       <div className="space-y-4 max-h-[calc(100vh-15rem)] overflow-y-auto pr-1 scroll-hidden">
         {localTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard key={task.id} task={task} onClick={() => setEditingTask(task)} />
         ))}
       </div>
 
@@ -129,7 +139,7 @@ export default function BoardColumn({
 
       {isPickingTask && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
-          <div className="relative max-w-lg w-full max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6">
+          <div className="relative max-w-md scroll-hidden w-full max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6">
             <button
               onClick={() => setIsPickingTask(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
@@ -152,7 +162,7 @@ export default function BoardColumn({
                   return (
                     <li
                       key={task.id}
-                      className="p-3 bg-gray-100 rounded-lg hover:bg-indigo-100 cursor-pointer"
+                      className="p-3 bg-gray-100 rounded-lg mt-5 hover:bg-indigo-100 cursor-pointer"
                       onClick={async () => {
                         await handleAddTask(task.id);
                         setIsPickingTask(false);
@@ -201,7 +211,7 @@ export default function BoardColumn({
 
       {isReturningTask && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
-          <div className="relative max-w-lg w-full max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6">
+          <div className="relative max-w-md w-full max-h-[90vh] overflow-y-auto scroll-hidden bg-white rounded-2xl p-6">
             <button
               onClick={() => setIsReturningTask(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
@@ -210,29 +220,75 @@ export default function BoardColumn({
             </button>
             <ul className="space-y-2">
               {localTasks.length > 0 ? (
-                localTasks.map((task) => (
-                  <li
-                    key={task.id}
-                    className="p-3 bg-gray-100 rounded-lg hover:bg-red-100 cursor-pointer"
-                    onClick={async () => {
-                      const moved = await moveTaskBack(task.id, title);
-                      if (moved) {
-                        setLocalTasks((prev) => prev.filter((t) => t.id !== task.id));
-                        onStatusChange(task.id, moved.status);
-                      }
-                      setIsReturningTask(false);
-                    }}
-                  >
-                    <div className="font-medium">{task.title}</div>
-                    <div className="text-sm text-gray-500 truncate">
-                      {task.description}
-                    </div>
-                  </li>
-                ))
+                localTasks.map((task) => {
+                  const labelColor =
+                    task.category && LABEL_COLOR_MAP[task.category.toLowerCase()]
+                      ? LABEL_COLOR_MAP[task.category.toLowerCase()]
+                      : "#999";
+
+                  const priorityColor =
+                    task.priority && PRIORITY_COLOR_MAP[task.priority.toLowerCase()]
+                      ? PRIORITY_COLOR_MAP[task.priority.toLowerCase()]
+                      : "#999";
+
+                  return (
+                    <li
+                      key={task.id}
+                      className="p-3 bg-gray-100 rounded-lg hover:bg-red-100 cursor-pointer mt-5"
+                      onClick={async () => {
+                        const moved = await moveTaskBack(task.id, title);
+                        if (moved) {
+                          setLocalTasks((prev) => prev.filter((t) => t.id !== task.id));
+                          onStatusChange(task.id, moved.status);
+                        }
+                        setIsReturningTask(false);
+                      }}
+                    >
+                      <div className="flex items-center mb-3">
+                        {task.priority && (
+                          <span
+                            className="w-3 h-3 rounded-full inline-block mr-5"
+                            style={{ backgroundColor: priorityColor }}
+                            title={task.priority}
+                          />
+                        )}
+                        {task.category && (
+                          <span
+                            className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-flex items-center justify-center leading-[20px]"
+                            style={{ backgroundColor: labelColor }}
+                          >
+                            {task.category}
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-medium">{task.title}</div>
+                      <div className="text-sm text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
+                        {task.description}
+                      </div>
+                    </li>
+                  );
+                })
               ) : (
                 <p className="text-sm text-gray-500">There are no tasks.</p>
               )}
             </ul>
+          </div>
+        </div>
+      )}
+      {editingTask && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+          <div className="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto scroll-hidden bg-white rounded-2xl p-6">
+            <button
+              onClick={() => setEditingTask(null)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            >
+              <X size={24} />
+            </button>
+            <EditTaskForm
+              task={editingTask}
+              onUpdate={handleUpdate}
+              onCancel={() => setEditingTask(null)}
+            />
           </div>
         </div>
       )}

@@ -4,7 +4,7 @@ import { Task, TaskStatus, User } from "@/lib/types";
 const BASE_URL = "http://localhost:5000/api";
 
 export async function fetchTasks(): Promise<Task[]> {
-  const res = await axios.get(`${BASE_URL}/tasks`);
+  const res = await axios.get(`${BASE_URL}/tasks/all`);
   return res.data;
 }
 
@@ -14,7 +14,7 @@ export async function fetchTaskById(taskId: number): Promise<Task> {
 }
 
 export async function createTask(task: Partial<Task>): Promise<Task> {
-    const res = await axios.post(`${BASE_URL}/tasks`, task);
+    const res = await axios.post(`${BASE_URL}/tasks/add`, task);
     return res.data;
 }
 
@@ -28,25 +28,25 @@ export async function deleteTask(taskId: number): Promise<void> {
 }
 
 export async function login(email: string, password: string): Promise<void> {
-  await axios.post(`${BASE_URL}/login`, { email, password });
+  await axios.post(`${BASE_URL}/login`, { email, password }, {withCredentials: true,});
 }
 
 export async function register(email: string, password: string, name?: string): Promise<void> {
   await axios.post(`${BASE_URL}/register`, { email, password, name });
 }
 
-export async function fetchUser(userId: number): Promise<User> {
-  const res = await axios.get(`${BASE_URL}/users/${userId}`);
+export async function fetchUser(): Promise<User> {
+  const res = await axios.get(`${BASE_URL}/users/me`, { withCredentials: true, });
   return res.data;
 }
 
 export async function fetchUsers(): Promise<User[]> {
-  const res = await axios.get(`${BASE_URL}/users`);
+  const res = await axios.get(`${BASE_URL}/users/`);
   return res.data;
 }
 
 export async function updateUser(userId: number, data: Partial<User>): Promise<User> {
-  const res = await axios.put(`${BASE_URL}/users/${userId}`, data);
+  const res = await axios.put(`${BASE_URL}/users/${userId}`, data, { withCredentials: true,});
   return res.data;
 }
 

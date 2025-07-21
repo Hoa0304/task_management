@@ -1,4 +1,4 @@
-import { Task, TaskStatus, User } from "@/lib/types";
+import { Task, TaskCategory, TaskPriority, TaskStatus, User } from "@/lib/types";
 import ReusableForm from "@/components/common/Form";
 import { taskFields } from "@/lib/constants";
 
@@ -13,17 +13,19 @@ export default function CreateTaskForm({
   onCancel: () => void;
   users?: User[];
 }) {
+  const categoryDefault = (taskFields.find(f => f.name === "category")?.options?.[0] ?? "Design") as TaskCategory;
+  const priorityDefault = (taskFields.find(f => f.name === "priority")?.options?.[0] ?? "Low") as TaskPriority;
   const initialValues: Partial<Omit<Task, "id">> = {
     title: "",
     description: "",
     status,
     dueDate: "",
-    category: undefined,
+    category: categoryDefault,
     cover: "",
     members: [],
     completed: 0,
     total: 8,
-    priority: undefined,
+    priority: priorityDefault,
   };
 
   return (
