@@ -20,6 +20,15 @@ def init_db():
     Base.metadata.create_all(bind=user_engine)
 
 def insert_task(db, task_data):
+    members_with_id = []
+    for member in task_data.get("members", []):
+        if "id" in member:
+            members_with_id.append({
+                "id": member["id"],
+                "name": member["name"],
+                "avatar": member["avatar"]
+            })
+
     mapped_data = {
         "title": task_data.get("title"),
         "description": task_data.get("description"),
@@ -27,7 +36,7 @@ def insert_task(db, task_data):
         "due_date": task_data.get("dueDate"),
         "category": task_data.get("category"),
         "cover": task_data.get("cover"),
-        "members": task_data.get("members"),
+        "members": members_with_id,
         "completed": task_data.get("completed"),
         "total": task_data.get("total"),
         "priority": task_data.get("priority"),

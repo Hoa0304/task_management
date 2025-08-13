@@ -3,6 +3,7 @@ from flask_cors import CORS
 from app.routes.task_routes import task_bp
 from app.routes.user_routes import user_bp
 from app.routes.auth_routes import auth_bp
+from app.routes.gemini_routes import gemini_bp
 from app.database import init_db
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ init_db()
 app.register_blueprint(task_bp, url_prefix="/api/tasks")
 app.register_blueprint(user_bp, url_prefix="/api/users")
 app.register_blueprint(auth_bp, url_prefix="/api")
+app.register_blueprint(gemini_bp, url_prefix="/api/gemini")
 
 if __name__ == "__main__":
     app.run(debug=True)
