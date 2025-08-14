@@ -45,7 +45,7 @@ export const taskFields: FieldConfig[] = [
     options: ["Design", "Content", "Research", "Planning"],
   },
   {
-    name: "dueDate",
+    name: "due_date",
     label: "Due Date",
     type: "date",
   },

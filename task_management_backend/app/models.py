@@ -9,15 +9,15 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=False)
-    description = Column(Text)
-    status = Column(String(50))
-    due_date = Column(String(20))
-    category = Column(String(100))
-    cover = Column(String(255))
-    members = Column(JSON)
-    completed = Column(Integer)
-    total = Column(Integer)
-    priority = Column(String(50))
+    description = Column(Text, nullable=True)    # Optional
+    status = Column(String(50), nullable=True)   # Optional
+    due_date = Column(String(20), nullable=True) # Optional
+    category = Column(String(100), nullable=True) 
+    cover = Column(String(255), nullable=True)   # Optional
+    members = Column(JSON, nullable=True)        # Optional
+    completed = Column(Integer, default=0)       # Optional,
+    total = Column(Integer, default=8)           # Optional,
+    priority = Column(String(50), nullable=True)
 
     def to_dict(self):
         return {
@@ -25,7 +25,7 @@ class Task(Base):
             "title": self.title,
             "description": self.description,
             "status": self.status,
-            "dueDate": self.due_date,
+            "due_date": self.due_date,
             "category": self.category,
             "cover": self.cover,
             "members": self.members,

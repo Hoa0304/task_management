@@ -55,9 +55,9 @@ export default function TaskCard({ task, onClick }: { task: Task;onClick?: () =>
       </p>
 
       {/* Date */}
-      {task.dueDate && (
+      {task.due_date && (
         <time className="inline-block border border-[#C4C4C4] text-[11px] text-gray-600 px-2 py-0.5 rounded-md mb-3">
-          {task.dueDate}
+          {task.due_date}
         </time>
       )}
 

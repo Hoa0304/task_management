@@ -33,7 +33,7 @@ def insert_task(db, task_data):
         "title": task_data.get("title"),
         "description": task_data.get("description"),
         "status": task_data.get("status"),
-        "due_date": task_data.get("dueDate"),
+        "due_date": task_data.get("due_date"),
         "category": task_data.get("category"),
         "cover": task_data.get("cover"),
         "members": members_with_id,
