@@ -31,7 +31,7 @@ export interface Task {
   title: string;
   description: string;
   status: TaskStatus;
-  dueDate?: string;
+  due_date?: string;
   category?: TaskCategory;
   cover?: string;
   members?: Member[];

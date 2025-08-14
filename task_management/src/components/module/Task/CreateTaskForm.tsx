@@ -19,7 +19,7 @@ export default function CreateTaskForm({
     title: "",
     description: "",
     status,
-    dueDate: "",
+    due_date: "",
     category: categoryDefault,
     cover: "",
     members: [],

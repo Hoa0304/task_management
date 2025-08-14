@@ -59,3 +59,12 @@ export async function moveTaskBack(taskId: number, status: TaskStatus): Promise<
   const res = await axios.put(`${BASE_URL}/tasks/status/rollback`, { task_id: taskId, status });
   return res.data;
 }
+
+export async function generateTask(prompt: string) {
+  const res = await axios.post(
+    `${BASE_URL}/gemini/generate-gemini`,
+    { prompt },
+    { withCredentials: true }
+  );
+  return res.data;
+}
