@@ -80,3 +80,5 @@ export const taskStatusOrder: TaskStatus[] = [
   "Review",
   "Done",
 ];
+
+export const defaultAvatar = "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png";

@@ -42,7 +42,7 @@ export default function TasksPage() {
           id: Date.now(),
           title: data.title,
           description: data.description || "",
-          status: "To Do",
+          status: "Backlog",
         };
         setTasks((prev) => [...prev, newTask]);
         setShowForm(false);

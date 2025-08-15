@@ -4,13 +4,10 @@ from sqlalchemy.orm import scoped_session
 
 from app.models import Task
 from app.database import TaskSessionLocal, insert_task
-from app.helpers import VALID_STATUSES
+from app.helpers import VALID_STATUSES, task_to_dict
 
 task_bp = Blueprint("task_bp", __name__)
 db = scoped_session(TaskSessionLocal)
-
-def task_to_dict(task: Task):
-    return task.to_dict()
 
 @task_bp.route("/all", methods=["GET"])
 def get_tasks():
@@ -36,22 +33,30 @@ def handle_task(task_id):
         return jsonify(task_to_dict(task))
 
     if request.method == "PUT":
-        data = request.json
+        try:
+            task = db.query(Task).filter(Task.id == task_id).first()
+            if not task:
+                return jsonify({"error": "Task not found"}), 404
 
-        task.title = data.get("title", task.title)
-        task.description = data.get("description", task.description)
-        task.status = data.get("status", task.status)
-        task.due_date = data.get("due_date", task.due_date)
-        task.category = data.get("category", task.category)
-        task.cover = data.get("cover", task.cover)
-        task.members = data.get("members", task.members)
-        task.completed = data.get("completed", task.completed)
-        task.total = data.get("total", task.total)
-        task.priority = data.get("priority", task.priority)
+            data = request.json
+            task.title = data.get("title", task.title)
+            task.description = data.get("description", task.description)
+            task.status = data.get("status", task.status)
+            task.due_date = data.get("due_date", task.due_date)
+            task.category = data.get("category", task.category)
+            task.cover = data.get("cover", task.cover)
+            task.members = data.get("members", task.members)
+            task.completed = data.get("completed", task.completed)
+            task.total = data.get("total", task.total)
+            task.priority = data.get("priority", task.priority)
 
-        db.commit()
-        db.refresh(task)
-        return jsonify(task.to_dict())
+            db.commit()
+            db.refresh(task)
+            return jsonify(task.to_dict())
+
+        except Exception as e:
+            db.rollback()
+            return jsonify({"error": str(e)}), 500
 
     if request.method == "DELETE":
         db.delete(task)
@@ -62,17 +67,30 @@ def handle_task(task_id):
 def create_task():
     db_session = TaskSessionLocal()
     try:
-        new_task_data = request.get_json()
+        new_task_data = request.get_json() or {}
 
-        if 'due_date' in new_task_data and isinstance(new_task_data['due_date'], str):
-            try:
-                date_obj = datetime.strptime(new_task_data['due_date'], "%Y-%m-%d").date()
-                new_task_data['due_date'] = date_obj.isoformat()
-            except ValueError:
-                return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+        # Validate required fields
+        if not new_task_data.get("title"):
+            return jsonify({"error": "Title is required"}), 400
+        if not new_task_data.get("status"):
+            return jsonify({"error": "Status is required"}), 400
 
+        # Handle due_date if provided
+        if "due_date" in new_task_data and new_task_data["due_date"]:
+            if isinstance(new_task_data["due_date"], str):
+                try:
+                    date_obj = datetime.datetime.strptime(
+                        new_task_data["due_date"], "%Y-%m-%d"
+                    ).date()
+                    new_task_data["due_date"] = date_obj
+                except ValueError:
+                    return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+
+        # Insert new task
         created_task = insert_task(db_session, new_task_data)
+        db_session.commit()
         return jsonify(created_task.to_dict()), 201
+
     except Exception as e:
         db_session.rollback()
         print("Error:", e)

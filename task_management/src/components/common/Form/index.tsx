@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FormProps, Member, User } from "@/lib/types";
+import { FormProps, User } from "@/lib/types";
 import ImageUploader from "../Image";
+import UserSelector from "../UserSelector";
 
 interface ExtendedFormProps extends FormProps {
   users?: User[];
@@ -33,22 +34,9 @@ export default function ReusableForm({
     const { name, value, multiple, selectedOptions } =
       e.target as HTMLSelectElement;
 
-    if (multiple) {
-      const values = Array.from(selectedOptions, (option) => option.value);
-
-      if (multiple && name === "members") {
-        const selectedIds = Array.from(selectedOptions, (option) => option.value);
-
-        const selectedMembers = users
-          .filter((user) => selectedIds.includes(user.id.toString()))
-          .map((user) => ({
-            name: user.name,
-            avatar: user.avatar,
-          }));
-
-        setForm((prev) => ({ ...prev, [name]: selectedMembers }));
-      }
-
+    if (multiple && name === "members") {
+      const selectedIds = Array.from(selectedOptions, (option) => option.value);
+      setForm((prev) => ({ ...prev, [name]: selectedIds }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -68,25 +56,22 @@ export default function ReusableForm({
           </label>
 
           {field.type === "members" ? (
-            <select
-              multiple
-              name={String(field.name)}
-              value={
-                (form[String(field.name)] || []).map((member: any) =>
-                  users.find((u) => u.name === member.name)?.id.toString()
+            <UserSelector
+              users={users}
+              selectedMembers={
+                users.filter((u) =>
+                  (form[String(field.name)] || []).includes(u.id.toString())
                 )
               }
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#E5E5ED] rounded-md"
-            >
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-
+              onChange={(selected) =>
+                setForm((prev) => ({
+                  ...prev,
+                  [field.name]: selected.map((u) => u.id.toString()),
+                }))
+              }
+            />
           ) : field.type === "avatar" ? (
+
             <ImageUploader
               initialValue={form[String(field.name)] as string | undefined}
               onImageUpload={(base64) =>
@@ -128,8 +113,7 @@ export default function ReusableForm({
                 value={(form[String(field.name)] as string) || ""}
                 onChange={handleChange}
                 placeholder={field.placeholder}
-                className={`w-full ${field.icon ? "pl-9" : ""
-                  } px-3 py-2 border border-[#E5E5ED] rounded-md`}
+                className={`w-full ${field.icon ? "pl-9" : ""} px-3 py-2 border border-[#E5E5ED] rounded-md`}
               />
             </div>
           )}

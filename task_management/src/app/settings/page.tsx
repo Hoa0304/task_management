@@ -7,6 +7,7 @@ import Sidebar from "@/components/common/Sidebar";
 import { FieldConfig, TaskRole, User } from "@/lib/types";
 import { MailIcon } from "lucide-react";
 import { fetchUser, updateUser } from "@/lib/api";
+import { defaultAvatar } from "@/lib/constants";
 
 const fields: FieldConfig[] = [
   { name: "name", label: "User Name", type: "text" },
@@ -32,8 +33,6 @@ export default function SettingsPage() {
     role: undefined,
     avatar: "",
   });
-
-  const defaultAvatar = "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png";
 
   useEffect(() => {
     fetchUser()

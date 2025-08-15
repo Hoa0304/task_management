@@ -20,27 +20,35 @@ export default function EditTaskForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (data: Record<string, any>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const updated = await updateTask(task.id, data);
-      onUpdate(updated);
-    } catch (err: any) {
-      setError(err.message || "Failed to update task");
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleSubmit = async (data: Record<string, any>) => {
+  setLoading(true);
+  setError(null);
 
-  const initialValues: Record<string, any> = {
-    ...task,
-    members:
-      task.members?.map((member) => {
-        const matchedUser = users.find((u) => u.name === member.name);
-        return matchedUser ? matchedUser.id.toString() : null;
-      }).filter((id): id is string => !!id) || [],
-  };
+  try {
+    // Map từ ID sang object {id, name, avatar}
+    const formattedData = {
+      ...data,
+      members: data.members?.map((id: string | number) => {
+        const user = users.find((u) => u.id === Number(id));
+        return user
+          ? { id: user.id, name: user.name, avatar: user.avatar }
+          : null;
+      }).filter(Boolean) || [],
+    };
+
+    const updated = await updateTask(task.id, formattedData);
+    onUpdate(updated);
+  } catch (err: any) {
+    setError(err.message || "Failed to update task");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const initialValues: Record<string, any> = {
+  ...task,
+  members: task.members?.map((m) => m.id.toString()) || [],
+};
 
   return (
     <div className="space-y-4">

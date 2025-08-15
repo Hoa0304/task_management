@@ -28,7 +28,14 @@ class Task(Base):
             "due_date": self.due_date,
             "category": self.category,
             "cover": self.cover,
-            "members": self.members,
+            "members": [
+                {
+                    "id": getattr(member, "id", member.get("id")),
+                    "name": getattr(member, "name", member.get("name")),
+                    "avatar": getattr(member, "avatar", member.get("avatar")),
+                }
+                for member in self.members
+            ],
             "completed": self.completed,
             "total": self.total,
             "priority": self.priority,
