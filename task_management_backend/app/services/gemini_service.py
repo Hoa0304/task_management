@@ -22,7 +22,7 @@ Return ONLY a single JSON object matching exactly this schema:
 {{
   "title": "string",
   "description": "string",
-  "status": "Backlog | To Do | In Progress | Review | Done",
+  "status": "Backlog",
   "due_date": "YYYY-MM-DD",
   "category": "Design | Content | Research | Planning",
   "priority": "Low | Medium | High"

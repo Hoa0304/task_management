@@ -21,13 +21,12 @@ def init_db():
 
 def insert_task(db, task_data):
     members_with_id = []
-    for member in task_data.get("members", []):
-        if "id" in member:
-            members_with_id.append({
-                "id": member["id"],
-                "name": member["name"],
-                "avatar": member["avatar"]
-            })
+    for idx, member in enumerate(task_data.get("members", []), start=1):
+        members_with_id.append({
+            "id": member.get("id", f"{idx}"),
+            "name": member.get("name"),
+            "avatar": member.get("avatar")
+        })
 
     mapped_data = {
         "title": task_data.get("title"),

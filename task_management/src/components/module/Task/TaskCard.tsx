@@ -1,9 +1,17 @@
+"use client";
+
 import { Task } from "@/lib/types";
 import Image from "next/image";
 import { CheckCircle } from "lucide-react";
 import { LABEL_COLOR_MAP, PRIORITY_COLOR_MAP } from "@/lib/constants";
 
-export default function TaskCard({ task, onClick }: { task: Task;onClick?: () => void; }) {
+export default function TaskCard({
+  task,
+  onClick,
+}: {
+  task: Task;
+  onClick?: () => void;
+}) {
   const labelColor = task.category
     ? LABEL_COLOR_MAP[task.category.toLowerCase()] || "#999"
     : "#999";
@@ -13,17 +21,20 @@ export default function TaskCard({ task, onClick }: { task: Task;onClick?: () =>
     : "#999";
 
   return (
-    <article className="bg-white rounded-2xl shadow p-4 w-full font-sans mb-5">
+    <article
+      className="bg-white rounded-2xl shadow p-4 w-full font-sans mb-5 cursor-pointer"
+      onClick={onClick}
+    >
       {/* Category + Priority */}
-      <div className="flex items-center justify-between mb-3"
-            onClick={onClick}
-      >
-        <span
-          className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-flex items-center justify-center leading-[20px]"
-          style={{ backgroundColor: labelColor }}
-        >
-          {task.category}
-        </span>
+      <div className="flex items-center justify-between mb-3">
+        {task.category && (
+          <span
+            className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-flex items-center justify-center leading-[20px]"
+            style={{ backgroundColor: labelColor }}
+          >
+            {task.category}
+          </span>
+        )}
         {task.priority && (
           <span
             className="w-3 h-3 rounded-full inline-block"
