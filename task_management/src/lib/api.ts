@@ -56,7 +56,7 @@ export async function addTaskToStatus(taskId: number, status: string): Promise<T
 }
 
 export async function moveTaskBack(taskId: number, status: TaskStatus): Promise<Task | null> {
-  const res = await axios.put(`${BASE_URL}/tasks/status/rollback`, { task_id: taskId, status });
+  const res = await axios.put(`${BASE_URL}/tasks/status/rollback`, { task_id: taskId });
   return res.data;
 }
 
