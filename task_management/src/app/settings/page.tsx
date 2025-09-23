@@ -7,6 +7,7 @@ import Sidebar from "@/components/common/Sidebar";
 import { FieldConfig, TaskRole, User } from "@/lib/types";
 import { MailIcon } from "lucide-react";
 import { fetchUser, updateUser } from "@/lib/api";
+import { defaultAvatar } from "@/lib/constants";
 
 const fields: FieldConfig[] = [
   { name: "name", label: "User Name", type: "text" },
@@ -25,7 +26,7 @@ const fields: FieldConfig[] = [
 ];
 
 export default function SettingsPage() {
-  const userId = 1;
+  const [userId, setUserId] = useState<number | null>(null);
   const [initialForm, setInitialForm] = useState<Partial<User>>({
     name: "",
     email: "",
@@ -33,13 +34,18 @@ export default function SettingsPage() {
     avatar: "",
   });
 
-  const defaultAvatar = "https://img.lovepik.com/free-png/20220127/lovepik-female-avatar-elements-of-womens-day-png-image_401901116_wh1200.png";
-
   useEffect(() => {
-    fetchUser(userId)
+    fetchUser()
       .then((data) => {
         console.log("Fetched user:", data);
-        setInitialForm(data);
+        setUserId(data.id);
+
+        setInitialForm({
+          name: typeof data.name === "string" ? data.name : "",
+          email: typeof data.email === "string" ? data.email : "",
+          role: typeof data.role === "string" ? (data.role as TaskRole) : undefined,
+          avatar: typeof data.avatar === "string" ? data.avatar : "",
+        });
       })
       .catch(console.error);
   }, []);
@@ -89,17 +95,22 @@ export default function SettingsPage() {
                 fields={fields}
                 initialValues={initialForm}
                 onSubmit={async (formData) => {
+                  if (userId === null) {
+                    alert("User ID not found.");
+                    return;
+                  }
                   try {
                     const updatedUser: User = {
                       id: userId,
-                      name: formData.name || "",
-                      email: formData.email || "",
-                      avatar: formData.upload || "",
+                      name: typeof formData.name === "string" ? formData.name : "",
+                      email: typeof formData.email === "string" ? formData.email : "",
+                      avatar: typeof formData.upload === "string" ? formData.upload : "",
                       role:
                         formData.role && formData.role !== ""
                           ? (formData.role as TaskRole)
                           : undefined,
                     };
+
                     const result = await updateUser(userId, updatedUser);
                     setInitialForm(result);
                     alert("Settings saved successfully!");

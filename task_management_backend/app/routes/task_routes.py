@@ -10,9 +10,6 @@ task_bp = Blueprint("task_bp", __name__)
 db = scoped_session(TaskSessionLocal)
 task_service = TaskService(db)
 
-def task_to_dict(task: Task):
-    return task.to_dict()
-
 @task_bp.route("/all", methods=["GET"])
 def get_tasks():
     status = request.args.get("status")

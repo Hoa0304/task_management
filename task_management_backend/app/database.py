@@ -20,14 +20,22 @@ def init_db():
     Base.metadata.create_all(bind=user_engine)
 
 def insert_task(db, task_data):
+    members_with_id = []
+    for idx, member in enumerate(task_data.get("members", []), start=1):
+        members_with_id.append({
+            "id": member.get("id", f"{idx}"),
+            "name": member.get("name"),
+            "avatar": member.get("avatar")
+        })
+
     mapped_data = {
         "title": task_data.get("title"),
         "description": task_data.get("description"),
         "status": task_data.get("status"),
-        "due_date": task_data.get("dueDate"),
+        "due_date": task_data.get("due_date"),
         "category": task_data.get("category"),
         "cover": task_data.get("cover"),
-        "members": task_data.get("members"),
+        "members": members_with_id,
         "completed": task_data.get("completed"),
         "total": task_data.get("total"),
         "priority": task_data.get("priority"),

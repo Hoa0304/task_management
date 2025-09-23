@@ -7,6 +7,7 @@ import {
   Settings,
   Send,
   Folder,
+  User,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 const icons = [
   { icon: LayoutGrid, href: "/dashboard", label: "Dashboard" },
   { icon: Briefcase, href: "/projects", label: "Projects" },
+  { icon: User, href: "/users", label: "Users" },
   { icon: BookOpen, href: "/tasks", label: "Tasks" },
   { icon: Settings, href: "/settings", label: "Settings" },
   { icon: Send, href: "/inbox", label: "Inbox" },

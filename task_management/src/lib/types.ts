@@ -21,6 +21,7 @@ export type TaskRole =
   | "Analytics";
 
 export interface Member {
+  id: number;
   name: string;
   avatar: string;
 }
@@ -30,7 +31,7 @@ export interface Task {
   title: string;
   description: string;
   status: TaskStatus;
-  dueDate?: string;
+  due_date?: string;
   category?: TaskCategory;
   cover?: string;
   members?: Member[];

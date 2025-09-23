@@ -1,9 +1,17 @@
+"use client";
+
 import { Task } from "@/lib/types";
 import Image from "next/image";
 import { CheckCircle } from "lucide-react";
 import { LABEL_COLOR_MAP, PRIORITY_COLOR_MAP } from "@/lib/constants";
 
-export default function TaskCard({ task }: { task: Task }) {
+export default function TaskCard({
+  task,
+  onClick,
+}: {
+  task: Task;
+  onClick?: () => void;
+}) {
   const labelColor = task.category
     ? LABEL_COLOR_MAP[task.category.toLowerCase()] || "#999"
     : "#999";
@@ -13,15 +21,20 @@ export default function TaskCard({ task }: { task: Task }) {
     : "#999";
 
   return (
-    <article className="bg-white rounded-2xl shadow p-4 w-full font-sans mb-5">
+    <article
+      className="bg-white rounded-2xl shadow p-4 w-full font-sans mb-5 cursor-pointer"
+      onClick={onClick}
+    >
       {/* Category + Priority */}
       <div className="flex items-center justify-between mb-3">
-        <span
-          className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-flex items-center justify-center leading-[20px]"
-          style={{ backgroundColor: labelColor }}
-        >
-          {task.category}
-        </span>
+        {task.category && (
+          <span
+            className="text-xs text-white h-[22px] px-3 rounded-lg font-medium inline-flex items-center justify-center leading-[20px]"
+            style={{ backgroundColor: labelColor }}
+          >
+            {task.category}
+          </span>
+        )}
         {task.priority && (
           <span
             className="w-3 h-3 rounded-full inline-block"
@@ -43,33 +56,33 @@ export default function TaskCard({ task }: { task: Task }) {
       )}
 
       {/* Title */}
-      <h3 className="font-medium text-[15px] text-[#232360] mb-0.5">
+      <h3 className="font-medium text-[15px] text-[#232360] mb-0.5 line-clamp-1">
         {task.title}
       </h3>
 
       {/* Description */}
-      <p className="font-medium text-[14px] text-[#768396] mb-2">
+      <p className="font-medium text-[14px] text-[#768396] mb-2 line-clamp-2">
         {task.description}
       </p>
 
       {/* Date */}
-      {task.dueDate && (
+      {task.due_date && (
         <time className="inline-block border border-[#C4C4C4] text-[11px] text-gray-600 px-2 py-0.5 rounded-md mb-3">
-          {task.dueDate}
+          {task.due_date}
         </time>
       )}
 
       {/* avatars + progress */}
-      <div className="flex items-center justify-between pt-1">
-        <div className="flex -space-x-2">
+      <div className="flex items-center justify-between">
+        <div className="flex -space-x-1">
           {task.members?.slice(0, 3).map((member, index) => (
             <Image
               key={index}
               src={member.avatar}
               alt={member.name}
-              width={24}
-              height={24}
-              className="rounded-full border-2 border-white"
+              width={32}
+              height={32}
+              className="rounded-full w-6 h-6 object-cover border-2 border-white"
             />
           ))}
         </div>

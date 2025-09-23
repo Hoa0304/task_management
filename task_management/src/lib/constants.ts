@@ -45,7 +45,7 @@ export const taskFields: FieldConfig[] = [
     options: ["Design", "Content", "Research", "Planning"],
   },
   {
-    name: "dueDate",
+    name: "due_date",
     label: "Due Date",
     type: "date",
   },
@@ -80,3 +80,5 @@ export const taskStatusOrder: TaskStatus[] = [
   "Review",
   "Done",
 ];
+
+export const defaultAvatar = "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png";

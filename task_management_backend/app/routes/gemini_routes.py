@@ -10,6 +10,7 @@ def generate_gemini():
     db_session = TaskSessionLocal()
     try:
         user_prompt = request.json.get("prompt")
+
         if not user_prompt:
             return jsonify({"error": "Missing prompt"}), 400
 
