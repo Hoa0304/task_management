@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Task, TaskStatus } from "@/lib/types";
 import BoardColumn from "./BoardColumn";
 import { taskStatusOrder } from "@/lib/constants";
@@ -13,6 +13,10 @@ interface BoardProps {
 
 export default function Board({ tasks: initialTasks }: BoardProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
+
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   const handleStatusChange = (taskId: number, newStatus: TaskStatus) => {
     setTasks(prev =>
