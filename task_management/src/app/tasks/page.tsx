@@ -43,6 +43,12 @@ export default function TasksPage() {
           title: data.title,
           description: data.description || "",
           status: "Backlog",
+          due_date: data.due_date,
+          priority: data.priority,
+          completed: data.completed,
+          category: data.category,
+          members: data.members,
+          total: data.total,
         };
         setTasks((prev) => [...prev, newTask]);
         setShowForm(false);

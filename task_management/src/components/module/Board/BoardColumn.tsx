@@ -8,7 +8,7 @@ import Status from "./Status";
 import CreateTaskForm from "../Task/CreateTaskForm";
 import RemoveTaskModal from "./Modals/RemoveTaskModal";
 import EditTaskForm from "../Task/EditTaskForm";
-import { Droppable, Draggable } from "react-beautiful-dnd";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { createTask, deleteTask, fetchUsers, addTaskToStatus, moveTaskBack } from "@/lib/api";
 import { LABEL_COLOR_MAP, PRIORITY_COLOR_MAP, taskStatusOrder } from "@/lib/constants";
 
@@ -17,6 +17,7 @@ interface BoardColumnProps {
   tasks: Task[];
   allTasks: Task[];
   onStatusChange: (taskId: number, newStatus: TaskStatus) => void;
+  onTaskUpdate: (updatedTask: Task) => void;
   isDroppable?: boolean;
 }
 
@@ -25,6 +26,7 @@ export default function BoardColumn({
   tasks,
   allTasks,
   onStatusChange,
+  onTaskUpdate,
   isDroppable = true,
 }: BoardColumnProps) {
   const [isAdding, setIsAdding] = useState(false);
@@ -52,6 +54,7 @@ export default function BoardColumn({
     try {
       const created = await createTask(task);
       setLocalTasks([created, ...localTasks]);
+      onTaskUpdate(created);
       onStatusChange(created.id, created.status);
       setIsAdding(false);
     } catch (error) {
@@ -75,7 +78,8 @@ export default function BoardColumn({
       const added = await addTaskToStatus(taskId, title);
       if (added) {
         setLocalTasks((prev) => [added, ...prev]);
-        onStatusChange(taskId, title);}
+        onStatusChange(taskId, title);
+      }
       setIsPickingTask(false);
     } catch (err) {
       console.error("Failed to move task:", err);
@@ -86,6 +90,7 @@ export default function BoardColumn({
     setLocalTasks((prev) =>
       prev.map((task) => (task.id === updated.id ? updated : task))
     );
+    onTaskUpdate(updated);
     onStatusChange(updated.id, updated.status);
     setEditingTask(null);
   };
@@ -106,13 +111,25 @@ export default function BoardColumn({
       />
 
       {isDroppable && (
-        <Droppable droppableId={title} isDropDisabled={false} isCombineEnabled={false} ignoreContainerClipping={false}>
+        <Droppable droppableId={title as string}>
           {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-4 max-h-[calc(100vh-15rem)] overflow-y-auto pr-1">
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="space-y-4 max-h-[calc(100vh-15rem)] overflow-y-auto pr-1 scroll-hidden"
+            >
               {tasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
+                <Draggable
+                  key={task.id.toString()}
+                  draggableId={task.id.toString()}
+                  index={index}
+                >
                   {(provided) => (
-                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
                       <TaskCard task={task} onClick={() => setEditingTask(task)} />
                     </div>
                   )}
@@ -122,6 +139,7 @@ export default function BoardColumn({
             </div>
           )}
         </Droppable>
+
       )}
 
       {/* Non-droppable fallback */}
