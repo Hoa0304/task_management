@@ -8,7 +8,7 @@ from app.database import init_db
 
 app = Flask(__name__)
 app.secret_key = "a89b16c6439d92c5fd0f74992d9a42dc0ff64519772c9a3fa41bc7f2a65f7a4e"
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+CORS(app, supports_credentials=True, origins=["*"])
 
 init_db()
 
