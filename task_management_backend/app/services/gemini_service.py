@@ -4,7 +4,7 @@ import json
 import requests
 from dotenv import load_dotenv
 
-from app.database import insert_task
+from task_management_backend.app.database import insert_task
 
 load_dotenv()
 GEMINI_KEY = os.getenv("GEMINI_KEY")

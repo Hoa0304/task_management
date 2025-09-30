@@ -1,8 +1,8 @@
 import datetime
 from sqlalchemy.orm import scoped_session
-from app.models import Task
-from app.helpers import VALID_STATUSES, task_to_dict
-from app.database import insert_task
+from task_management_backend.app.models import Task
+from task_management_backend.app.helpers import VALID_STATUSES, task_to_dict
+from task_management_backend.app.database import insert_task
 
 class TaskService:
     def __init__(self, db: scoped_session):

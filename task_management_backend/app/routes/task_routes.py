@@ -2,9 +2,8 @@ import datetime
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import scoped_session
 
-from app.models import Task
-from app.database import TaskSessionLocal
-from app.services.task_service import TaskService
+from task_management_backend.app.database import TaskSessionLocal
+from task_management_backend.app.services.task_service import TaskService
 
 task_bp = Blueprint("task_bp", __name__)
 db = scoped_session(TaskSessionLocal)
