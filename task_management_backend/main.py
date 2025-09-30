@@ -17,5 +17,5 @@ app.register_blueprint(user_bp, url_prefix="/api/users")
 app.register_blueprint(auth_bp, url_prefix="/api")
 app.register_blueprint(gemini_bp, url_prefix="/api/gemini")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
