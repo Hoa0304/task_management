@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify, session
-from sqlalchemy.orm import scoped_session
-from app.models import Task, User
-from app.database import TaskSessionLocal, UserSessionLocal
-from app.routes.task_routes import db as db_task 
+from task_management_backend.app.models import Task, User
+from task_management_backend.app.database import TaskSessionLocal, UserSessionLocal
+from task_management_backend.app.routes.task_routes import db as db_task 
 
 user_bp = Blueprint("user_bp", __name__)
 

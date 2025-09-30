@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from app.database import TaskSessionLocal
+from task_management_backend.app.database import TaskSessionLocal
 import requests
-from app.services.gemini_service import generate_task_from_gemini
+from task_management_backend.app.services.gemini_service import generate_task_from_gemini
 
 gemini_bp = Blueprint("gemini_bp", __name__)
 

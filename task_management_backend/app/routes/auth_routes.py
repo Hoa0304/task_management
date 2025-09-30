@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 
-from app.models import User
-from app.database import UserSessionLocal
+from task_management_backend.app.models import User
+from task_management_backend.app.database import UserSessionLocal
 
 auth_bp = Blueprint("auth_bp", __name__)
 
