@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
-from app.routes.task_routes import task_bp
-from app.routes.user_routes import user_bp
-from app.routes.auth_routes import auth_bp
-from app.routes.gemini_routes import gemini_bp
-from app.database import init_db
+from task_management_backend.app.routes.task_routes import task_bp
+from task_management_backend.app.routes.user_routes import user_bp
+from task_management_backend.app.routes.auth_routes import auth_bp
+from task_management_backend.app.routes.gemini_routes import gemini_bp
+from task_management_backend.app.database import init_db
 
 app = Flask(__name__)
 app.secret_key = "a89b16c6439d92c5fd0f74992d9a42dc0ff64519772c9a3fa41bc7f2a65f7a4e"
