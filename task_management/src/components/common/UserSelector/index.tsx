@@ -2,12 +2,13 @@
 
 import { defaultAvatar } from "@/lib/constants";
 import { User } from "@/lib/types";
+import Image from "next/image";
 
 interface UserSelectorProps {
   users: User[];
   selectedMembers: User[];
   onChange: (selected: User[]) => void;
-  mode?: "add" | "edit";
+  // mode?: "add" | "edit";
 }
 
 export default function UserSelector({
@@ -37,9 +38,11 @@ export default function UserSelector({
             }`}
           >
             <div className="flex items-center gap-3">
-              <img
+              <Image
                 src={user.avatar || defaultAvatar}
                 alt={user.name || "Avatar"}
+                width={32}
+                height={32}
                 className="w-8 h-8 rounded-full object-cover"
               />
               <div>
