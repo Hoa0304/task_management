@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReusableForm from "@/components/common/Form";
 import Header from "@/components/common/Header";
@@ -37,9 +38,7 @@ export default function SettingsPage() {
   useEffect(() => {
     fetchUser()
       .then((data) => {
-        console.log("Fetched user:", data);
         setUserId(data.id);
-
         setInitialForm({
           name: typeof data.name === "string" ? data.name : "",
           email: typeof data.email === "string" ? data.email : "",
@@ -60,15 +59,19 @@ export default function SettingsPage() {
 
         <main className="overflow-y-auto scroll-hidden flex-1">
           <div className="relative">
-            <img
+            <Image
               src="https://addo.vn/wp-content/uploads/2021/10/anh-bia-anh-nen-facebook-dep-57-1024x379.jpg"
               alt="Cover"
+              width={1024}
+              height={379}
               className="w-full h-72 object-cover"
             />
             <div className="absolute left-10 -bottom-25">
-              <img
+              <Image
                 src={initialForm.avatar || defaultAvatar}
                 alt="Avatar"
+                width={160}
+                height={160}
                 className="w-40 h-40 rounded-full border-4 border-white shadow-lg"
               />
             </div>
